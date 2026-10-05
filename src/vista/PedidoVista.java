@@ -84,8 +84,8 @@ public class PedidoVista {
         System.out.println("Estado    : " + pedido.getEstado());
         System.out.println("----------------------------------------");
         System.out.println("Productos:");
-        if (pedido.getProductos() != null) {
-            for (Producto p : pedido.getProductos()) {
+        if (pedido.getListaProductos() != null) {
+            for (Producto p : pedido.getListaProductos()) {
                 System.out.printf(" - %s: %d unidades x $%.2f (Existencia: %d)%n",
                         p.getNombre(), p.getCantidad(), p.getPrecio(), p.getExistencia());
             }

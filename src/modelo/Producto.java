@@ -1,16 +1,10 @@
 package modelo;
 
-/**
- * Representa un producto que forma parte de un pedido.
- */
 public class Producto {
-    private String nombre;
-    private double precio;
+    private final String nombre;
+    private final double precio;
     private int cantidad;
     private int existencia;
-
-    public Producto() {
-    }
 
     public Producto(String nombre, double precio, int cantidad, int existencia) {
         this.nombre = nombre;
@@ -19,45 +13,28 @@ public class Producto {
         this.existencia = existencia;
     }
 
-    public String getNombre() {
-        return nombre;
+    public int getExistencia() {
+        return existencia;
     }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
-
-    public double getPrecio() {
-        return precio;
-    }
-
-    public void setPrecio(double precio) {
-        this.precio = precio;
+    /**
+     * Alias de compatibilidad. Se recomienda usar getExistencia().
+     */
+    public int getCantidadExistencia() {
+        return getExistencia();
     }
 
     public int getCantidad() {
         return cantidad;
     }
 
-    public void setCantidad(int cantidad) {
-        this.cantidad = cantidad;
+    public String getNombre() {
+        return nombre;
     }
 
-    public int getExistencia() {
-        return existencia;
+    public double getPrecio() {
+        return precio;
     }
 
-    public void setExistencia(int existencia) {
-        this.existencia = existencia;
-    }
 
-    @Override
-    public String toString() {
-        return "Producto{" +
-                "nombre='" + nombre + '\'' +
-                ", precio=" + precio +
-                ", cantidad=" + cantidad +
-                ", existencia=" + existencia +
-                '}';
-    }
 }

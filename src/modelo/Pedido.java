@@ -1,34 +1,32 @@
 package modelo;
 
+import modelo.Producto;
+
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Representa un pedido dentro del dominio del sistema.
- */
 public class Pedido {
     private int id;
-    private String cliente;
-    private List<Producto> productos;
+    private final String cliente;
+    private final List<Producto> listaProductos;
+    //Los volvi doubles para calculos más exactos
     private double subtotal;
     private double descuento;
     private double impuestos;
     private double total;
-    private String estado;
+    private EstadoPedido estado;
+    private boolean revisionFraude;
 
-    public Pedido() {
-        this.productos = new ArrayList<>();
-    }
-
-    public Pedido(String cliente, List<Producto> productos) {
+    public Pedido(
+            String cliente,
+            List<Producto> listaProductos,
+            double subtotal,
+            double descuento,
+            double impuestos,
+            double total,
+            EstadoPedido estado) {
         this.cliente = cliente;
-        this.productos = productos != null ? productos : new ArrayList<>();
-    }
-
-    public Pedido(int id, String cliente, List<Producto> productos, double subtotal, double descuento, double impuestos, double total, String estado) {
-        this.id = id;
-        this.cliente = cliente;
-        this.productos = productos != null ? productos : new ArrayList<>();
+        this.listaProductos = listaProductos != null ? listaProductos : new ArrayList<>();
         this.subtotal = subtotal;
         this.descuento = descuento;
         this.impuestos = impuestos;
@@ -36,43 +34,36 @@ public class Pedido {
         this.estado = estado;
     }
 
-    public int getId() {
-        return id;
+    public Pedido(
+            String cliente,
+            List<Producto> listaProductos
+    ) {
+        this(
+                cliente,
+                listaProductos != null ? listaProductos : new ArrayList<>(),
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                null
+        );
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
 
     public String getCliente() {
         return cliente;
     }
 
-    public void setCliente(String cliente) {
-        this.cliente = cliente;
+    public List<Producto> getListaProductos() {
+        return listaProductos;
     }
 
     public List<Producto> getProductos() {
-        return productos;
-    }
-
-    public void setProductos(List<Producto> productos) {
-        this.productos = productos;
-    }
-
-    public void agregarProducto(Producto producto) {
-        if (this.productos == null) {
-            this.productos = new ArrayList<>();
-        }
-        this.productos.add(producto);
+        return getListaProductos();
     }
 
     public double getSubtotal() {
         return subtotal;
-    }
-
-    public void setSubtotal(double subtotal) {
-        this.subtotal = subtotal;
     }
 
     public double getDescuento() {
@@ -95,16 +86,19 @@ public class Pedido {
         return total;
     }
 
-    public void setTotal(double total) {
-        this.total = total;
-    }
-
-    public String getEstado() {
+    public EstadoPedido getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoPedido estado) {
         this.estado = estado;
+    }
+
+    public boolean isRevisionFraude() {
+        return revisionFraude;
+    }
+    public void setRevisionFraude(boolean revisionFraude) {
+        this.revisionFraude = revisionFraude;
     }
 
     @Override
@@ -112,12 +106,30 @@ public class Pedido {
         return "Pedido{" +
                 "id=" + id +
                 ", cliente='" + cliente + '\'' +
-                ", productos=" + productos +
-                ", subtotal=" + subtotal +
-                ", descuento=" + descuento +
-                ", impuestos=" + impuestos +
-                ", total=" + total +
-                ", estado='" + estado + '\'' +
+                ", productos=" + (listaProductos != null ? listaProductos.size() : 0) +
+                ", subtotal=$" + String.format("%.2f", subtotal) +
+                ", revisionFraude=" + revisionFraude + //nuevo flujo
+                ", descuento=$" + String.format("%.2f", descuento) +
+                ", impuestos=$" + String.format("%.2f", impuestos) +
+                ", total=$" + String.format("%.2f", total) +
+                ", estado=" + estado +
                 '}';
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public void setTotal(double total) {
+        this.total = total;
+    }
+
+    public void setSubtotal(double subtotal) {
+        this.subtotal = subtotal;
     }
 }
