@@ -3,9 +3,7 @@ package modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Representa un pedido dentro del dominio del sistema.
- */
+
 public class Pedido {
     private int id;
     private String cliente;

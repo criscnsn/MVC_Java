@@ -4,13 +4,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Modelo encargado de toda la lógica de negocio, validaciones,
- * cálculos matemáticos y persistencia en memoria de los pedidos.
- * 
- * La lógica está modularizada internamente en métodos de negocio
- * que ejecutan de forma secuencial y ordenada cada regla del dominio.
- */
 public class PedidoModelo {
 
     private static final double UMBRAL_DESCUENTO = 1000.0;
@@ -21,10 +14,6 @@ public class PedidoModelo {
     private final Map<Integer, Pedido> pedidos = new HashMap<>();
     private int siguienteId = 1;
 
-    /**
-     * Orquesta el flujo completo de registro del pedido a través de
-     * métodos de negocio específicos y desacoplados.
-     */
     public Pedido registrarPedido(Pedido pedido) {
         validarDatos(pedido);
         comprobarDisponibilidad(pedido);
@@ -39,13 +28,8 @@ public class PedidoModelo {
         return pedido;
     }
 
-    // ==========================================
-    // MÉTODOS DE LÓGICA DE NEGOCIO Y CÁLCULOS
-    // ==========================================
+    // MÉTODOS DE LÓGICA DE NEGOCIO
 
-    /**
-     * 1. Valida la integridad estructural de los datos del pedido.
-     */
     public void validarDatos(Pedido pedido) {
         if (pedido == null) {
             throw new IllegalArgumentException("El pedido no puede ser nulo.");
@@ -66,9 +50,6 @@ public class PedidoModelo {
         pedido.setEstado(EstadoPedido.PEDIDO_VALIDO);
     }
 
-    /**
-     * 2. Comprueba que las cantidades solicitadas no superen la existencia en stock.
-     */
     public void comprobarDisponibilidad(Pedido pedido) {
         Map<String, Integer> cantidadesTotales = new HashMap<>();
         for (Producto p : pedido.getProductos()) {
@@ -85,9 +66,7 @@ public class PedidoModelo {
         }
     }
 
-    /**
-     * 3. Calcula y asigna el subtotal sumando el costo de cada producto.
-     */
+
     public void calcularSubtotal(Pedido pedido) {
         double subtotal = 0.0;
         for (Producto p : pedido.getProductos()) {
@@ -96,9 +75,7 @@ public class PedidoModelo {
         pedido.setSubtotal(subtotal);
     }
 
-    /**
-     * 4. Verifica si el importe supera el umbral de seguridad para marcar revisión de fraude.
-     */
+
     public void verificarFraude(Pedido pedido) {
         if (pedido.getSubtotal() > LIMITE_FRAUDE) {
             pedido.setRevisionFraude(true);
@@ -108,9 +85,7 @@ public class PedidoModelo {
         }
     }
 
-    /**
-     * 5. Aplica el descuento correspondiente según el subtotal alcanzado.
-     */
+
     public void aplicarDescuento(Pedido pedido) {
         if (pedido.getSubtotal() >= UMBRAL_DESCUENTO) {
             double descuento = pedido.getSubtotal() * PORCENTAJE_DESCUENTO;
@@ -126,26 +101,20 @@ public class PedidoModelo {
         }
     }
 
-    /**
-     * 6. Calcula los impuestos (IVA 16%) sobre la base gravable (subtotal - descuento).
-     */
+
     public void calcularImpuestos(Pedido pedido) {
         double baseImponible = Math.max(0, pedido.getSubtotal() - pedido.getDescuento());
         double impuestos = baseImponible * TASA_IVA;
         pedido.setImpuestos(impuestos);
     }
 
-    /**
-     * 7. Calcula el importe total neto a pagar.
-     */
+
     public void calcularTotal(Pedido pedido) {
         double total = (pedido.getSubtotal() - pedido.getDescuento()) + pedido.getImpuestos();
         pedido.setTotal(total);
     }
 
-    /**
-     * 8. Asigna el identificador único y confirma el estado final del pedido.
-     */
+
     public void confirmarPedido(Pedido pedido) {
         pedido.setId(siguienteId++);
         if (pedido.isRevisionFraude()) {
@@ -157,16 +126,10 @@ public class PedidoModelo {
         }
     }
 
-    /**
-     * 9. Persiste el pedido en la colección interna del modelo.
-     */
+
     public void guardarPedido(Pedido pedido) {
         pedidos.put(pedido.getId(), pedido);
     }
-
-    // ==========================================
-    // MÉTODOS DE CONSULTA Y LECTURA
-    // ==========================================
 
     public Pedido consultarPedido(int id) {
         return pedidos.get(id);

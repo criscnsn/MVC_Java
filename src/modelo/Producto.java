@@ -1,8 +1,5 @@
 package modelo;
 
-/**
- * Representa un producto que forma parte de un pedido.
- */
 public class Producto {
     private String nombre;
     private double precio;
