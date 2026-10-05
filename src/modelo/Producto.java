@@ -47,6 +47,10 @@ public class Producto {
         return existencia;
     }
 
+    public int getCantidadExistencia() {
+        return getExistencia();
+    }
+
     public void setExistencia(int existencia) {
         this.existencia = existencia;
     }

@@ -14,7 +14,8 @@ public class Pedido {
     private double descuento;
     private double impuestos;
     private double total;
-    private String estado;
+    private EstadoPedido estado;
+    private boolean revisionFraude;
 
     public Pedido() {
         this.productos = new ArrayList<>();
@@ -25,7 +26,7 @@ public class Pedido {
         this.productos = productos != null ? productos : new ArrayList<>();
     }
 
-    public Pedido(int id, String cliente, List<Producto> productos, double subtotal, double descuento, double impuestos, double total, String estado) {
+    public Pedido(int id, String cliente, List<Producto> productos, double subtotal, double descuento, double impuestos, double total, EstadoPedido estado) {
         this.id = id;
         this.cliente = cliente;
         this.productos = productos != null ? productos : new ArrayList<>();
@@ -56,8 +57,12 @@ public class Pedido {
         return productos;
     }
 
+    public List<Producto> getListaProductos() {
+        return productos;
+    }
+
     public void setProductos(List<Producto> productos) {
-        this.productos = productos;
+        this.productos = productos != null ? productos : new ArrayList<>();
     }
 
     public void agregarProducto(Producto producto) {
@@ -99,12 +104,28 @@ public class Pedido {
         this.total = total;
     }
 
-    public String getEstado() {
+    public EstadoPedido getEstado() {
         return estado;
     }
 
-    public void setEstado(String estado) {
+    public void setEstado(EstadoPedido estado) {
         this.estado = estado;
+    }
+
+    public void setEstado(String estadoStr) {
+        try {
+            this.estado = EstadoPedido.valueOf(estadoStr);
+        } catch (Exception e) {
+            this.estado = EstadoPedido.PEDIDO_PROCESADO;
+        }
+    }
+
+    public boolean isRevisionFraude() {
+        return revisionFraude;
+    }
+
+    public void setRevisionFraude(boolean revisionFraude) {
+        this.revisionFraude = revisionFraude;
     }
 
     @Override
@@ -112,12 +133,13 @@ public class Pedido {
         return "Pedido{" +
                 "id=" + id +
                 ", cliente='" + cliente + '\'' +
-                ", productos=" + productos +
-                ", subtotal=" + subtotal +
-                ", descuento=" + descuento +
-                ", impuestos=" + impuestos +
-                ", total=" + total +
-                ", estado='" + estado + '\'' +
+                ", productos=" + (productos != null ? productos.size() : 0) +
+                ", subtotal=" + String.format("%.2f", subtotal) +
+                ", descuento=" + String.format("%.2f", descuento) +
+                ", impuestos=" + String.format("%.2f", impuestos) +
+                ", total=" + String.format("%.2f", total) +
+                ", estado=" + estado +
+                ", revisionFraude=" + revisionFraude +
                 '}';
     }
 }

@@ -4,46 +4,53 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Modelo encargado de la lógica de negocio, validaciones,
+ * Modelo encargado de toda la lógica de negocio, validaciones,
  * cálculos matemáticos y persistencia en memoria de los pedidos.
- * NOTA: No debe imprimir datos ni solicitar entrada del usuario.
+ * NOTA: No contiene dependencias de UI ni solicita entrada al usuario.
  */
 public class PedidoModelo {
+
+    private static final double UMBRAL_DESCUENTO = 1000.0;
+    private static final double PORCENTAJE_DESCUENTO = 0.10;
+    private static final double TASA_IVA = 0.16;
+    private static final double LIMITE_FRAUDE = 5000.0;
 
     private final Map<Integer, Pedido> pedidos = new HashMap<>();
     private int siguienteId = 1;
 
     public Pedido registrarPedido(Pedido pedido) {
-        // 1. Validaciones de negocio
+        // 1. Validaciones de negocio y disponibilidad de stock
         validarPedido(pedido);
 
         // 2. Cálculos financieros
-        double subtotal = 0.0;
-        for (Producto p : pedido.getProductos()) {
-            subtotal += p.getPrecio() * p.getCantidad();
-        }
-
-        double descuento = 0.0;
-        if (subtotal >= 1000.0) {
-            descuento = subtotal * 0.10;
-        }
-
-        double baseImponible = subtotal - descuento;
-        double impuestos = baseImponible * 0.16;
+        double subtotal = calcularSubtotal(pedido);
+        double descuento = calcularDescuento(subtotal);
+        double baseImponible = Math.max(0, subtotal - descuento);
+        double impuestos = baseImponible * TASA_IVA;
         double total = baseImponible + impuestos;
 
-        // 3. Asignación de valores calculados y estado
+        // 3. Asignación de valores calculados
         pedido.setId(siguienteId++);
         pedido.setSubtotal(subtotal);
         pedido.setDescuento(descuento);
         pedido.setImpuestos(impuestos);
         pedido.setTotal(total);
-        pedido.setEstado("PROCESADO");
 
-        // 4. Almacenar pedido
+        // 4. Determinación y corrección de estado de negocio
+        if (subtotal > LIMITE_FRAUDE) {
+            pedido.setRevisionFraude(true);
+            pedido.setEstado(EstadoPedido.PEDIDO_MARCADO_COMO_FRAUDE);
+        } else if (descuento > 0.0) {
+            pedido.setRevisionFraude(false);
+            pedido.setEstado(EstadoPedido.PEDIDO_CON_DESCUENTO);
+        } else {
+            pedido.setRevisionFraude(false);
+            pedido.setEstado(EstadoPedido.PEDIDO_SIN_DESCUENTO);
+        }
+
+        // 5. Persistencia en memoria
         pedidos.put(pedido.getId(), pedido);
 
-        // 5. Devolver resultado procesado
         return pedido;
     }
 
@@ -53,6 +60,18 @@ public class PedidoModelo {
 
     public Map<Integer, Pedido> listarPedidos() {
         return new HashMap<>(pedidos);
+    }
+
+    private double calcularSubtotal(Pedido pedido) {
+        double subtotal = 0.0;
+        for (Producto p : pedido.getProductos()) {
+            subtotal += p.getPrecio() * p.getCantidad();
+        }
+        return subtotal;
+    }
+
+    private double calcularDescuento(double subtotal) {
+        return (subtotal >= UMBRAL_DESCUENTO) ? subtotal * PORCENTAJE_DESCUENTO : 0.0;
     }
 
     private void validarPedido(Pedido pedido) {
