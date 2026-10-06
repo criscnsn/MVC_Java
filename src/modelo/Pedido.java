@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representa un pedido dentro del dominio del sistema según la especificación del ADA:
+ * Representa un pedido dentro del dominio del sistema según la especificación del ADA (Líneas 152-161):
  * - id
  * - cliente
  * - productos
@@ -35,17 +35,6 @@ public class Pedido {
         this.estado = EstadoPedido.PEDIDO_VALIDO;
     }
 
-    public Pedido(int id, String cliente, List<Producto> productos, double subtotal, double descuento, double impuestos, double total, EstadoPedido estado) {
-        this.id = id;
-        this.cliente = cliente;
-        this.productos = productos != null ? productos : new ArrayList<>();
-        this.subtotal = subtotal;
-        this.descuento = descuento;
-        this.impuestos = impuestos;
-        this.total = total;
-        this.estado = estado;
-    }
-
     public int getId() {
         return id;
     }
@@ -63,10 +52,6 @@ public class Pedido {
     }
 
     public List<Producto> getProductos() {
-        return productos;
-    }
-
-    public List<Producto> getListaProductos() {
         return productos;
     }
 
@@ -119,14 +104,6 @@ public class Pedido {
 
     public void setEstado(EstadoPedido estado) {
         this.estado = estado;
-    }
-
-    public void setEstado(String estadoStr) {
-        try {
-            this.estado = EstadoPedido.valueOf(estadoStr.toUpperCase().trim());
-        } catch (Exception e) {
-            this.estado = EstadoPedido.PROCESADO;
-        }
     }
 
     @Override

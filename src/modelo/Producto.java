@@ -1,8 +1,5 @@
 package modelo;
 
-/**
- * Representa un producto que forma parte de un pedido.
- */
 public class Producto {
     private String nombre;
     private double precio;
@@ -45,10 +42,6 @@ public class Producto {
 
     public int getExistencia() {
         return existencia;
-    }
-
-    public int getCantidadExistencia() {
-        return getExistencia();
     }
 
     public void setExistencia(int existencia) {

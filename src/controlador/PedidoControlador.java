@@ -22,14 +22,6 @@ public class PedidoControlador {
         this.vista = vista;
     }
 
-    public PedidoVista getVista() {
-        return vista;
-    }
-
-    public PedidoModelo getModelo() {
-        return modelo;
-    }
-
     /**
      * Flujo de registro:
      * 1. Capturar datos desde la Vista.
