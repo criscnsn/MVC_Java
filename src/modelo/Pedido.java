@@ -4,7 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Representa un pedido dentro del dominio del sistema.
+ * Representa un pedido dentro del dominio del sistema según la especificación del ADA:
+ * - id
+ * - cliente
+ * - productos
+ * - subtotal
+ * - descuento
+ * - impuestos
+ * - total
+ * - estado
  */
 public class Pedido {
     private int id;
@@ -15,15 +23,16 @@ public class Pedido {
     private double impuestos;
     private double total;
     private EstadoPedido estado;
-    private boolean revisionFraude;
 
     public Pedido() {
         this.productos = new ArrayList<>();
+        this.estado = EstadoPedido.PEDIDO_VALIDO;
     }
 
     public Pedido(String cliente, List<Producto> productos) {
         this.cliente = cliente;
         this.productos = productos != null ? productos : new ArrayList<>();
+        this.estado = EstadoPedido.PEDIDO_VALIDO;
     }
 
     public Pedido(int id, String cliente, List<Producto> productos, double subtotal, double descuento, double impuestos, double total, EstadoPedido estado) {
@@ -114,18 +123,10 @@ public class Pedido {
 
     public void setEstado(String estadoStr) {
         try {
-            this.estado = EstadoPedido.valueOf(estadoStr);
+            this.estado = EstadoPedido.valueOf(estadoStr.toUpperCase().trim());
         } catch (Exception e) {
-            this.estado = EstadoPedido.PEDIDO_PROCESADO;
+            this.estado = EstadoPedido.PROCESADO;
         }
-    }
-
-    public boolean isRevisionFraude() {
-        return revisionFraude;
-    }
-
-    public void setRevisionFraude(boolean revisionFraude) {
-        this.revisionFraude = revisionFraude;
     }
 
     @Override
@@ -139,7 +140,6 @@ public class Pedido {
                 ", impuestos=" + String.format("%.2f", impuestos) +
                 ", total=" + String.format("%.2f", total) +
                 ", estado=" + estado +
-                ", revisionFraude=" + revisionFraude +
                 '}';
     }
 }

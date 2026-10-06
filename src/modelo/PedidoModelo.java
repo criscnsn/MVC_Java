@@ -8,15 +8,23 @@ import java.util.Map;
  * Modelo encargado de toda la lógica de negocio, validaciones,
  * cálculos matemáticos y persistencia en memoria de los pedidos.
  * 
- * La lógica está modularizada internamente en métodos de negocio
- * que ejecutan de forma secuencial y ordenada cada regla del dominio.
+ * Cumple estrictamente con las reglas de negocio de Instruccion_ADA.md:
+ * - el cliente no puede estar vacío;
+ * - debe existir al menos un producto;
+ * - la cantidad debe ser mayor que cero;
+ * - no puede superar la existencia;
+ * - subtotal = Σ precio × cantidad;
+ * - descuento del 10 % si subtotal ≥ $1,000;
+ * - impuesto del 16 % sobre subtotal − descuento;
+ * - estado final = PROCESADO.
+ * 
+ * NOTA: El Modelo no imprime información ni solicita datos al usuario.
  */
 public class PedidoModelo {
 
     private static final double UMBRAL_DESCUENTO = 1000.0;
     private static final double PORCENTAJE_DESCUENTO = 0.10;
     private static final double TASA_IVA = 0.16;
-    private static final double LIMITE_FRAUDE = 5000.0;
 
     private final Map<Integer, Pedido> pedidos = new HashMap<>();
     private int siguienteId = 1;
@@ -29,7 +37,6 @@ public class PedidoModelo {
         validarDatos(pedido);
         comprobarDisponibilidad(pedido);
         calcularSubtotal(pedido);
-        verificarFraude(pedido);
         aplicarDescuento(pedido);
         calcularImpuestos(pedido);
         calcularTotal(pedido);
@@ -44,7 +51,10 @@ public class PedidoModelo {
     // ==========================================
 
     /**
-     * 1. Valida la integridad estructural de los datos del pedido.
+     * 1. Valida la integridad estructural de los datos del pedido:
+     * - el cliente no puede estar vacío.
+     * - debe existir al menos un producto.
+     * - la cantidad debe ser mayor que cero para cada producto.
      */
     public void validarDatos(Pedido pedido) {
         if (pedido == null) {
@@ -86,7 +96,7 @@ public class PedidoModelo {
     }
 
     /**
-     * 3. Calcula y asigna el subtotal sumando el costo de cada producto.
+     * 3. Calcula y asigna el subtotal: subtotal = Σ precio × cantidad.
      */
     public void calcularSubtotal(Pedido pedido) {
         double subtotal = 0.0;
@@ -97,37 +107,19 @@ public class PedidoModelo {
     }
 
     /**
-     * 4. Verifica si el importe supera el umbral de seguridad para marcar revisión de fraude.
-     */
-    public void verificarFraude(Pedido pedido) {
-        if (pedido.getSubtotal() > LIMITE_FRAUDE) {
-            pedido.setRevisionFraude(true);
-            pedido.setEstado(EstadoPedido.PEDIDO_MARCADO_COMO_FRAUDE);
-        } else {
-            pedido.setRevisionFraude(false);
-        }
-    }
-
-    /**
-     * 5. Aplica el descuento correspondiente según el subtotal alcanzado.
+     * 4. Aplica el descuento: 10% si subtotal ≥ $1,000; de lo contrario 0.
      */
     public void aplicarDescuento(Pedido pedido) {
         if (pedido.getSubtotal() >= UMBRAL_DESCUENTO) {
             double descuento = pedido.getSubtotal() * PORCENTAJE_DESCUENTO;
             pedido.setDescuento(descuento);
-            if (!pedido.isRevisionFraude()) {
-                pedido.setEstado(EstadoPedido.PEDIDO_CON_DESCUENTO);
-            }
         } else {
             pedido.setDescuento(0.0);
-            if (!pedido.isRevisionFraude()) {
-                pedido.setEstado(EstadoPedido.PEDIDO_SIN_DESCUENTO);
-            }
         }
     }
 
     /**
-     * 6. Calcula los impuestos (IVA 16%) sobre la base gravable (subtotal - descuento).
+     * 5. Calcula los impuestos: 16 % sobre subtotal − descuento.
      */
     public void calcularImpuestos(Pedido pedido) {
         double baseImponible = Math.max(0, pedido.getSubtotal() - pedido.getDescuento());
@@ -136,7 +128,7 @@ public class PedidoModelo {
     }
 
     /**
-     * 7. Calcula el importe total neto a pagar.
+     * 6. Calcula el importe total: (subtotal - descuento) + impuestos.
      */
     public void calcularTotal(Pedido pedido) {
         double total = (pedido.getSubtotal() - pedido.getDescuento()) + pedido.getImpuestos();
@@ -144,21 +136,15 @@ public class PedidoModelo {
     }
 
     /**
-     * 8. Asigna el identificador único y confirma el estado final del pedido.
+     * 7. Asigna el identificador único y el estado final requerido: PROCESADO.
      */
     public void confirmarPedido(Pedido pedido) {
         pedido.setId(siguienteId++);
-        if (pedido.isRevisionFraude()) {
-            pedido.setEstado(EstadoPedido.PEDIDO_MARCADO_COMO_FRAUDE);
-        } else if (pedido.getDescuento() > 0.0) {
-            pedido.setEstado(EstadoPedido.PEDIDO_CON_DESCUENTO);
-        } else {
-            pedido.setEstado(EstadoPedido.PEDIDO_SIN_DESCUENTO);
-        }
+        pedido.setEstado(EstadoPedido.PROCESADO);
     }
 
     /**
-     * 9. Persiste el pedido en la colección interna del modelo.
+     * 8. Persiste el pedido en la colección en memoria del modelo.
      */
     public void guardarPedido(Pedido pedido) {
         pedidos.put(pedido.getId(), pedido);
