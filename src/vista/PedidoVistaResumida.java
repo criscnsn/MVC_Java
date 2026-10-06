@@ -2,11 +2,6 @@ package vista;
 
 import modelo.Pedido;
 
-/**
- * Vista alternativa que presenta una representación resumida del pedido.
- * Demuestra la separación arquitectónica MVC: diferentes vistas pueden reutilizar
- * el mismo modelo sin modificarlo.
- */
 public class PedidoVistaResumida extends PedidoVista {
 
     @Override

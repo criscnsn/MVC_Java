@@ -9,10 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Clase principal encargada de inicializar los componentes del patrón MVC
- * y orquestar la ejecución del sistema o las pruebas de evidencia.
- */
 public class Principal {
 
     public static void main(String[] args) {

@@ -3,17 +3,6 @@ package modelo;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Representa un pedido dentro del dominio del sistema según la especificación del ADA (Líneas 152-161):
- * - id
- * - cliente
- * - productos
- * - subtotal
- * - descuento
- * - impuestos
- * - total
- * - estado
- */
 public class Pedido {
     private int id;
     private String cliente;

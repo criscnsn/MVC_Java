@@ -4,10 +4,6 @@ import modelo.Pedido;
 import modelo.PedidoModelo;
 import vista.PedidoVista;
 
-/**
- * Controlador que coordina la interacción entre la Vista y el Modelo.
- * NO contiene reglas de negocio ni lógica de cálculo.
- */
 public class PedidoControlador {
 
     private PedidoModelo modelo;
@@ -22,13 +18,6 @@ public class PedidoControlador {
         this.vista = vista;
     }
 
-    /**
-     * Flujo de registro:
-     * 1. Capturar datos desde la Vista.
-     * 2. Enviar datos al Modelo para validación, cálculo y almacenamiento.
-     * 3. Pasar el resultado a la Vista para su presentación.
-     * 4. Si ocurre un error de validación, informar a la Vista.
-     */
     public void registrarPedido() {
         try {
             Pedido pedido = vista.capturarPedido();
@@ -41,9 +30,7 @@ public class PedidoControlador {
         }
     }
 
-    /**
-     * Flujo de registro recibiendo directamente un objeto pedido (útil para pruebas/evidencias programáticas).
-     */
+
     public void registrarPedido(Pedido pedido) {
         try {
             Pedido resultado = modelo.registrarPedido(pedido);
@@ -55,11 +42,7 @@ public class PedidoControlador {
         }
     }
 
-    /**
-     * Flujo de consulta con ID:
-     * Vista -> id -> Controlador -> Modelo.consultarPedido(id) -> Controlador -> Vista.mostrarPedido()
-     * Si no existe: Vista.mostrarError("Pedido no encontrado")
-     */
+
     public void consultarPedido(int id) {
         Pedido pedido = modelo.consultarPedido(id);
         if (pedido != null) {
@@ -69,9 +52,7 @@ public class PedidoControlador {
         }
     }
 
-    /**
-     * Flujo de consulta interactivo: solicita ID a la Vista y realiza la consulta.
-     */
+
     public void consultarPedido() {
         try {
             int id = vista.capturarIdPedido();

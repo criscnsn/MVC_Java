@@ -7,11 +7,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-/**
- * Vista de consola para la interacción con el usuario.
- * Responsabilidad: presentar información, capturar acciones y mostrar mensajes.
- * NO debe realizar cálculos matemáticos ni aplicar reglas de negocio.
- */
 public class PedidoVista {
 
     protected final Scanner scanner;
