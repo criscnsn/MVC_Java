@@ -7,12 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class PedidoVista {
+public class PedidoVista implements PedidoObserver {
 
     protected final Scanner scanner;
 
     public PedidoVista() {
         this.scanner = new Scanner(System.in);
+    }
+    
+    @Override
+    public void onPedidoRegistrado(Pedido pedido) {
+        mostrarResultado(pedido);
     }
 
     public Pedido capturarPedido() {
