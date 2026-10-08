@@ -12,17 +12,21 @@ public class PedidoControlador {
     public PedidoControlador(PedidoModelo modelo, PedidoVista vista) {
         this.modelo = modelo;
         this.vista = vista;
+        this.modelo.agregarObservador(this.vista);
     }
 
-    public void setVista(PedidoVista vista) {
-        this.vista = vista;
+    public void setVista(PedidoVista nuevaVista) {
+        this.modelo.removerObservador(this.vista);
+        this.vista = nuevaVista;
+        this.modelo.agregarObservador(this.vista);
     }
 
     public void registrarPedido() {
         try {
             Pedido pedido = vista.capturarPedido();
-            Pedido resultado = modelo.registrarPedido(pedido);
-            vista.mostrarResultado(resultado);
+            
+            modelo.registrarPedido(pedido);
+
         } catch (IllegalArgumentException e) {
             vista.mostrarError(e.getMessage());
         } catch (Exception e) {
@@ -33,8 +37,7 @@ public class PedidoControlador {
 
     public void registrarPedido(Pedido pedido) {
         try {
-            Pedido resultado = modelo.registrarPedido(pedido);
-            vista.mostrarResultado(resultado);
+            modelo.registrarPedido(pedido);
         } catch (IllegalArgumentException e) {
             vista.mostrarError(e.getMessage());
         } catch (Exception e) {
