@@ -1,5 +1,7 @@
 package modelo;
 
+import vista.PedidoObserver;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +26,24 @@ public class PedidoModelo {
 
     private final Map<Integer, Pedido> pedidos = new HashMap<>();
     private int siguienteId = 1;
+    
+    private final List<PedidoObserver> observadores = new ArrayList<>();
+    
+    public void agregarObservador(PedidoObserver obs) {
+        if (!observadores.contains(obs)) {
+            observadores.add(obs);
+        }
+    }
+
+    public void removerObservador(PedidoObserver obs) {
+        observadores.remove(obs);
+    }
+
+    private void notificarObservadores(Pedido pedido) {
+        for (PedidoObserver obs : observadores) {
+            obs.onPedidoRegistrado(pedido); // Avisamos a todos los que estén escuchando
+        }
+    }
 
     public Pedido registrarPedido(Pedido pedido) {
         validarDatos(pedido);
@@ -34,6 +54,8 @@ public class PedidoModelo {
         calcularTotal(pedido);
         confirmarPedido(pedido);
         guardarPedido(pedido);
+        
+        notificarObservadores(pedido);
 
         return pedido;
     }
