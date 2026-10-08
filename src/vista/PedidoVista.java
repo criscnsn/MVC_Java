@@ -1,5 +1,6 @@
 package vista;
 
+import modelo.PedidoObserver;
 import modelo.Pedido;
 import modelo.Producto;
 
