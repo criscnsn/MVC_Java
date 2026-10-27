@@ -18,8 +18,7 @@ public class Principal {
         PedidoVistaResumida vistaResumida = new PedidoVistaResumida();
         PedidoControlador controlador = new PedidoControlador(modeloCompartido, vistaNormal);
 
-        System.out.println("====================================================");
-        System.out.println("    SISTEMA DE GESTIÓN DE PEDIDOS - ARQUITECTURA MVC");
+        System.out.println("    SISTEMA DE GESTIÓN DE PEDIDOS - MVC");
         System.out.println("====================================================");
         System.out.println("1. Demostración automática de casos de evidencia (ADA)");
         System.out.println("2. Modo interactivo por consola");
@@ -33,18 +32,11 @@ public class Principal {
         }
     }
 
-    /**
-     * Ejecuta automáticamente los 6 casos de prueba requeridos en las evidencias del ADA.
-     */
     public static void ejecutarCasosDeEvidencia(
             PedidoModelo modelo,
             PedidoVista vistaNormal,
             PedidoVistaResumida vistaResumida,
             PedidoControlador controlador) {
-
-        System.out.println("\n====================================================");
-        System.out.println(">>> EJECUTANDO LOS 6 CASOS DE EVIDENCIA SOLICITADOS <<<");
-        System.out.println("====================================================");
 
         // 1. Registrar pedido válido con descuento (Subtotal >= 1000)
         System.out.println("\n----------------------------------------------------");
@@ -104,10 +96,6 @@ public class Principal {
         System.out.println("\n--> 6.B Visualización con PedidoVistaResumida (Mismo Modelo, Nueva Representación) para el Pedido 1:");
         controlador.setVista(vistaResumida);
         controlador.consultarPedido(1);
-
-        System.out.println("====================================================");
-        System.out.println("         FIN DE LOS CASOS DE EVIDENCIA");
-        System.out.println("====================================================");
     }
 
     private static void ejecutarModoInteractivo(PedidoControlador controlador, Scanner scanner) {
